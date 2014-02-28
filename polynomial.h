@@ -1,9 +1,8 @@
 //============================================================================
-// Name        : 
-// Author      : 
-// Version     :
-// Copyright   : 
-// Description : 
+// Name        : Polynomial.h
+// Author      : William Widmer 
+// Version     : 1
+// Description : Polynomial class header file
 //============================================================================
 
 using namespace std;
@@ -13,6 +12,9 @@ using namespace std;
 #ifndef POLYNOMIAL_H
 #define POLYNOMIAL_H
 
+/* 
+ * Term in the form of (coefficient x ^ degree)
+ */
 struct Term
 {
   int coefficient;
@@ -28,12 +30,12 @@ public:
   Polynomial();
   Polynomial(const Polynomial& p); 
   Polynomial(int c, int e);		
-  Polynomial& operator=(const Polynomial& r);
+  Polynomial& operator=(const Polynomial& r);  
+  double operator()(double x);
   Polynomial& operator*(const Polynomial& r);
   ~Polynomial();
+  void simplify();
   void set(int x, int y);
-  double eval(double x);
-  void print();	
   friend std::ostream& operator<< (std::ostream& o, const Polynomial& p);
 };	
 
