@@ -1,10 +1,8 @@
-/*
 
  SOFTWARE DESIGN & ANALYSIS 3 PROJECT 1
  PROFESSOR WEISS HUNTER COLLEGE
  WILLIAM WIDMER 
  
-*/
 
 // From the assignment.pdf
 
