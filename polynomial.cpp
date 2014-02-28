@@ -1,10 +1,10 @@
 //============================================================================
-// Name        : 
-// Author      : 
-// Version     :
-// Copyright   : 
-// Description : 
+// Name        : Polynomial.cpp
+// Author      : William Widmer
+// Version     : 1
+// Description : Polynomial class implementation. 
 //============================================================================
+
 
 #include <iostream>
 #include <math.h>
@@ -13,14 +13,12 @@
 using namespace std;
 
 
-Polynomial::Polynomial() // default constructor, all 0x^0 
+Polynomial::Polynomial() // default constructor, zero polynomial 0x^0 
 {
   Term zero;
   zero.coefficient=0;
   zero.degree=0;
-  if(t.empty()){
-    t.push_front(zero);
-  }
+  t.push_front(zero);
 }
 Polynomial::Polynomial(const Polynomial& p) // Copy Constructor
 {
@@ -30,7 +28,6 @@ Polynomial::Polynomial(const Polynomial& p) // Copy Constructor
       set((*it).coefficient, (*it).degree);
     }   
 }	
-
 Polynomial::Polynomial(int x, int y) // Constructor for cx^e
 {
   Term xy;
@@ -41,11 +38,39 @@ Polynomial::Polynomial(int x, int y) // Constructor for cx^e
   } 
 }
 
-Polynomial::~Polynomial() // Clear memory of coefficient
+Polynomial::~Polynomial() // Clear memory and didn't do.
 {   
 }
 
+// Comparison function for sorting.
+bool compare(Term a, Term b){  
+  return a.degree > b.degree;
+}
 
+void Polynomial::simplify(){
+  // This works best if the list is sorted... So call another sort just in case.
+  t.sort(compare);  
+  list<Term>::iterator it = t.begin();  
+  list<Term>::iterator i = t.begin();
+  i++;  
+  while(i!=t.end()){
+    if( (*it).degree == (*i).degree && (*i).degree != 0){
+      (*it).coefficient+=(*i).coefficient;
+      it=t.erase(it);
+      i++;
+      continue;      
+    }   
+     it++;
+     i++;
+  }
+}
+  
+
+
+/* Function to set an exponent and coefficient. Iterates 
+ * to find an appropriate position to place the new Term xy. 
+ * If the List of terms is empty xy becomes the first element.
+ */
 void Polynomial::set(int x, int y)
 {
   Term xy;
@@ -66,26 +91,31 @@ void Polynomial::set(int x, int y)
   } else {
     t.push_front(xy);
   }
+  t.sort(compare);  
+  simplify();
 }
 	
-double Polynomial::eval(double x){
+
+/*
+ * Operator overloads for (), *, =, and <<
+ */
+	
+double Polynomial::operator()(double x){
   double sum=0;	
   for (list<Term>::iterator it = t.begin(); it != t.end(); ++it)
     {
-      sum += pow((*it).coefficient*x,(*it).degree);
+      double xdeg = pow(x,(*it).degree);
+      sum += (*it).coefficient*xdeg;
     }  
   return sum;  
 }	
 
-bool compare(Term a, Term b){
-  return a.degree > b.degree;
-}
 
 Polynomial& Polynomial::operator*(const Polynomial& r){
   list<Term> tt = r.t;
   list<Term> temp_list;
   for (list<Term>::iterator it = tt.begin(); it != tt.end(); ++it){
-    for(list<Term>::iterator it2 = t.begin(); it2!=t.end(); ++it2){
+    for(list<Term>::iterator it2 = t.begin(); it2 != t.end(); ++it2){
       Term temp;
       temp.degree=(*it).degree+(*it2).degree;
       temp.coefficient=(*it).coefficient*(*it2).coefficient;
@@ -93,7 +123,8 @@ Polynomial& Polynomial::operator*(const Polynomial& r){
     }
   }
   temp_list.sort(compare);
-  t=temp_list;
+  t=temp_list;  
+  simplify();
 }
 
 Polynomial& Polynomial::operator=(const Polynomial& r){  
@@ -104,6 +135,7 @@ Polynomial& Polynomial::operator=(const Polynomial& r){
       set((*it).coefficient, (*it).degree);
     }   
 }
+  
 
 std::ostream& operator<< (std::ostream& o, const Polynomial& p){  
   list<Term> t = p.t;
@@ -113,11 +145,14 @@ std::ostream& operator<< (std::ostream& o, const Polynomial& p){
   for (it = t.begin(); it != t.end(); ++it)
     {
       if(!(*it).coefficient == 0){
-	o << (*it).coefficient << "x^" << (*it).degree;
+       	o << (*it).coefficient << "x";
+	if(1 < (*it).degree || 0 == (*it).degree){
+	  o << "^" << (*it).degree;
+	}
 	if(!(it==i)){
 	 o << " + ";
 	}
       }
     }
-  o << "\n" << endl;
 }
+
