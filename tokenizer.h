@@ -1,8 +1,10 @@
 //============================================================================
 // Name        : tokenizer.h
 // Author      : William Widmer
-// Version     :
-// Description : 
+// Version     : 1?
+// Description : Tokenizer class header file made during a previous class.
+//               The tokenizer takes an input and seperates into many tokens
+//               of different types to allow for easy input verification.
 //============================================================================
 
 
@@ -13,6 +15,10 @@
 #include <vector>
 #include <set>
 
+
+/*
+ * Types of strings that can be found and used from an input.
+ */
 enum token_types_t{
 
     CMD,  // a sequence of alphanumeric characters and _, starting with alpha
@@ -25,7 +31,9 @@ enum token_types_t{
     ERRTOK    // unrecognized token
 
 };
-
+/*
+ * A token is some group of characters seperated by a " ". 
+ */
 struct Token{
 	token_types_t type;
 	std::string value;
@@ -40,19 +48,16 @@ class Tokenizer{
  	size_t         cur_pos;    // current position in the input string
  	std::set<char> separators; // set of separators
  	
- 	void move_through_digits(); // move cur_pos until the end or non-digit
+ 	void move_through_digits(); 
 	public:
-    	// constructor
     	Tokenizer(std::string str="");
  
-    	// a couple of modifiers
-    	void set_input(std::string); // set a new input,
-    	void restart();              // move cursor to the beginning, restart
+    	void set_input(std::string); 
+    	void restart();            
  
-	Token next_token();            // returns the next token
-	std::vector<Token> tokenize(); // returns the rest of the tokens	
-	bool has_more_token();         // are there more token(s)?
+	Token next_token();            
+	std::vector<Token> tokenize(); 	
+	bool has_more_token();        
 };
 
 #endif
-
